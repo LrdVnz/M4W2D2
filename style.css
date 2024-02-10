@@ -8,3 +8,9 @@ Animazione di aggiunta al carrello
 * {
     box-sizing: border-box;
 }
+
+footer {
+    width: 100%;
+    position: fixed; 
+    bottom: 0px;
+}

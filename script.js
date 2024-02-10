@@ -11,4 +11,52 @@
 
 Usa forEach, map, filter 
 
+API link : 
+https://striveschool-api.herokuapp.com/books
 */
+
+let searchInput = document.getElementById("book-search");
+let searchBtn = document.getElementById("search-btn");
+let bookList = document.getElementById("book-list");
+
+searchBtn.addEventListener("click", (event) => {
+  let searchValue = searchInput.value;
+  console.log(searchValue);
+  loadBooks();
+});
+
+let loadBooks = (searchValue) => {
+  if (searchValue == undefined) {
+    fetch(`https://striveschool-api.herokuapp.com/books`)
+      .then((response) => response.json())
+      .then((data) => {
+        bookList.innerHTML = "";
+        data.forEach((element, i) => {
+          createCard(element, i);
+        });
+      });
+  } else {
+    /* Codice per la query. Come devo richiamare la ricerca ??? 
+
+      fetch(`https://striveschool-api.herokuapp.com/books`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+      }); */
+  }
+};
+
+let createCard = (element, i) => {
+  bookList.innerHTML += ` 
+    <div class='col-6 col-md-3'> 
+    <div class="card overflow-hidden" id="card-original">
+    <img src="${element.img}" class="card-img-top" alt="${element.title}">
+    <div class="card-body">
+        <p class="card-text"> ${element.title} </p> 
+    </div>
+    </div>
+    </div>
+     `;
+};
+
+loadBooks();

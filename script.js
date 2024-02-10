@@ -21,8 +21,7 @@ let bookList = document.getElementById("book-list");
 
 searchBtn.addEventListener("click", (event) => {
   let searchValue = searchInput.value;
-  console.log(searchValue);
-  loadBooks();
+  loadBooks(searchValue);
 });
 
 let loadBooks = (searchValue) => {
@@ -36,9 +35,9 @@ let loadBooks = (searchValue) => {
         });
       });
   } else {
-    /* Codice per la query. Come devo richiamare la ricerca ??? 
-
-      fetch(`https://striveschool-api.herokuapp.com/books`)
+    /* Codice per la query. Come devo richiamare la ricerca ??? */
+/* 
+      fetch(`https://striveschool-api.herokuapp.com/books/search=${searchValue}`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
@@ -49,12 +48,16 @@ let loadBooks = (searchValue) => {
 let createCard = (element, i) => {
   bookList.innerHTML += ` 
     <div class='col-6 col-md-3'> 
-    <div class="card overflow-hidden" id="card-original">
-    <img src="${element.img}" class="card-img-top" alt="${element.title}">
-    <div class="card-body">
-        <p class="card-text"> ${element.title} </p> 
+     <div class="card overflow-hidden" id="card-original">
+      <img src="${element.img}" class="card-img-top" alt="${element.title}">
+      <div class="card-body">
+          <p class="card-text"> ${element.title} </p>
+      </div>
+    <div class="card-body d-flex justify-content-between py-1">
+      <p class="card-text ">${element.category}</a>
+      <p class="card-text ">€ ${element.price}</a>
     </div>
-    </div>
+     </div>
     </div>
      `;
 };

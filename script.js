@@ -20,6 +20,7 @@ let searchBtn = document.getElementById("search-btn");
 let bookList = document.getElementById("book-list");
 let cartBtn = document.getElementById("cart-btn");
 let cartUl = document.getElementById("cart-ul");
+let bookData = undefined; 
 
 let cartList = {
   /* Structure 
@@ -39,6 +40,7 @@ let loadBooks = (searchValue) => {
   fetch(`https://striveschool-api.herokuapp.com/books`)
     .then((response) => response.json())
     .then((data) => {
+      bookData = data; 
       bookList.innerHTML = "";
       controlSearch(data, searchValue);
     });
@@ -78,6 +80,14 @@ let createCard = (element, i) => {
      `;
 };
 
+
+/* Aggiungi al carrello: 
+  1. Al click del bottone aggiungi il libro corrente all'oggetto carrello.
+  2. Il carrello deve avere un testo che mostra sempre la somma totale del prezzo. 
+  3. Quindi prendi il titolo del libro, e il prezzo. Saranno la sua voce nel carrello. 
+*/
+
+
 let addToCart = (this_obj) => {
   // Dal bottone, vado a prendere la card che lo contiene, come nodo.
   let card = this_obj.parentNode.parentNode;
@@ -85,19 +95,22 @@ let addToCart = (this_obj) => {
   // Percorso per prezzo : card.childNodes[5].childNodes[2].innerText
   book_title = card.childNodes[3].childNodes[1].innerText;
   book_price = card.childNodes[5].childNodes[2].innerText;
+  // Per mostrare che è stata aggiunta al carrello: 
+  card.classList.add('border', 'border-2', 'border-success')
+  // Reset del carrello
   cartUl.innerHtml = ''
+  //  Aggiunta all'oggetto carrello. 
   cartList[`${book_title}`] = {
     title: book_title,
     price: book_price,
   };
-  showCart();
 };
 
 let showCart = () => {
     /* Per mostrare gli elementi nel cart. 
        - Ciclare nel cart e creare dei li da aggiungere a ul cart
-       - Da fare : 
-         - Non bisogna ciclare tutto l'oggetto cart ogni volta, sennò aggiungi gli elementi in modo doppio.  
+       - La funzione partirà quando viene cliccato il link del carrello
+       - Extra : far partire la funzione quando si scrolla fino al carrello. 
     */
    Object.keys(cartList).forEach(key => {
        cartUl.innerHTML += `
@@ -112,8 +125,28 @@ let showCart = () => {
 /* Carica i libri a prescindere che l'utente abbia cercato qualcosa. */
 loadBooks();
 
-/* Aggiungi al carrello: 
-  1. Al click del bottone aggiungi il libro corrente all'oggetto carrello.
-  2. Il carrello deve avere un testo che mostra sempre la somma totale del prezzo. 
-  3. Quindi prendi il titolo del libro, e il prezzo. Saranno la sua voce nel carrello. 
+/*  Funzione di ricerca. 
+     -Usa il keydown event listener sull'input. 
+     -Controlla se l'input è più lungo di tre caratteri. 
+        - Se si, filtra i risultati dell'array data. 
+    - Problema : 
+     - Quando vengono ricaricati i libri, si perde il border che segnala che sono stati aggiunti al carrello. 
 */
+
+searchInput.addEventListener('input', (event) => {
+  console.log('0bororoo')
+    if (searchInput.value.length < 3) {
+      loadBooks() 
+      return
+     }
+    
+    bookList.innerHTML = '';
+
+    let dataResult = bookData.filter((element, index) => {
+      if (element.title.toLowerCase().includes(searchInput.value.toLowerCase())) {
+        createCard(element, index)
+      };
+      return element
+    })
+    
+});

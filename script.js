@@ -18,15 +18,17 @@ https://striveschool-api.herokuapp.com/books
 let searchInput = document.getElementById("book-search");
 let searchBtn = document.getElementById("search-btn");
 let bookList = document.getElementById("book-list");
+let cartBtn = document.getElementById("cart-btn");
+let cartUl = document.getElementById("cart-ul");
 
 let cartList = {
-    /* 
+  /* Structure 
     book_title : {
         title : book title,
         price : book price, 
     }
     */
-}
+};
 
 searchBtn.addEventListener("click", (event) => {
   let searchValue = searchInput.value;
@@ -52,7 +54,6 @@ let controlSearch = (data, searchValue) => {
     /*  Usa search value per controllare dentro l'array
         Usa filter 
     */
-
   }
 };
 
@@ -77,14 +78,36 @@ let createCard = (element, i) => {
      `;
 };
 
-
 let addToCart = (this_obj) => {
-    // Dal bottone, vado a prendere la card che lo contiene, come nodo. 
-    let card = this_obj.parentNode.parentNode;
-    // Percorso per titolo : card.childNodes[3].childNodes[1].innerText
-    // Percorso per prezzo : card.childNodes[5].childNodes[2].innerText
+  // Dal bottone, vado a prendere la card che lo contiene, come nodo.
+  let card = this_obj.parentNode.parentNode;
+  // Percorso per titolo : card.childNodes[3].childNodes[1].innerText
+  // Percorso per prezzo : card.childNodes[5].childNodes[2].innerText
+  book_title = card.childNodes[3].childNodes[1].innerText;
+  book_price = card.childNodes[5].childNodes[2].innerText;
+  cartUl.innerHtml = ''
+  cartList[`${book_title}`] = {
+    title: book_title,
+    price: book_price,
+  };
+  showCart();
+};
 
-}
+let showCart = () => {
+    /* Per mostrare gli elementi nel cart. 
+       - Ciclare nel cart e creare dei li da aggiungere a ul cart
+       - Da fare : 
+         - Non bisogna ciclare tutto l'oggetto cart ogni volta, sennò aggiungi gli elementi in modo doppio.  
+    */
+   Object.keys(cartList).forEach(key => {
+       cartUl.innerHTML += `
+          <li> 
+              <span> ${cartList[key].title} </span>
+              <span> ${cartList[key].price} </span>
+          </li> 
+       `
+   });
+};
 
 /* Carica i libri a prescindere che l'utente abbia cercato qualcosa. */
 loadBooks();
@@ -94,4 +117,3 @@ loadBooks();
   2. Il carrello deve avere un testo che mostra sempre la somma totale del prezzo. 
   3. Quindi prendi il titolo del libro, e il prezzo. Saranno la sua voce nel carrello. 
 */
-

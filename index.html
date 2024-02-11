@@ -9,7 +9,8 @@
     <link rel="stylesheet" href="style.css">
     <title>My library</title>
 </head>
-<!--
+
+    <!--
       1. Navbar 
         - La navbar deve avere la casella di ricerca. 
           - Input con tasto stilizzato da bootstrap.
@@ -39,7 +40,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Carrello</a>
+                        <a class="nav-link" href="#cart" id="cart-btn">Carrello</a>
                     </li>
                 </ul>
             </div>
@@ -58,6 +59,15 @@
             <div class="row gy-3 mt-4" id="book-list">
                 <!-- Spazio per le cards che verranno create in js -->
             </div>
+        </div>
+
+        <div class="container m-auto my-4" id="cart">
+            <h3>Cart</h3>
+            <!-- Layout basico per mostrare titoli e prezzi -->
+            <ul id="cart-ul">
+                 
+            </ul>
+
         </div>
     </main>
 

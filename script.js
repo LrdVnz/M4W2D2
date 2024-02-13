@@ -31,54 +31,75 @@ let cartList = {
     */
 };
 
-searchBtn.addEventListener("click", (event) => {
-  let searchValue = searchInput.value;
-  loadBooks(searchValue);
+fetch(`https://striveschool-api.herokuapp.com/books`)
+.then((response) => response.json())
+.then((data) => {
+  bookData = data;
+  bookList.innerHTML = "";
+  createResults(data);
 });
 
-let loadBooks = (searchValue) => {
-  fetch(`https://striveschool-api.herokuapp.com/books`)
-    .then((response) => response.json())
-    .then((data) => {
-      bookData = data;
-      bookList.innerHTML = "";
-      controlSearch(data, searchValue);
-    });
-};
 
 /* Controllo se l'utente ha inserito dell'input */
-let controlSearch = (data, searchValue) => {
-  if (searchValue === undefined) {
-    data.forEach((element, i) => {
-      createCard(element, i);
-    });
-  } else {
-    /*  Usa search value per controllare dentro l'array
-        Usa filter 
-    */
-  }
+let createResults = (data = bookData) => {
+  bookList.innerHTML = "";
+
+  data.forEach((element, i) => {
+    createCard(element, i);
+  });
 };
 
 /* Crea ogni card */
 let createCard = (element, i) => {
   bookList.innerHTML += ` 
-    <div class='col-6 col-md-3'> 
-     <div class="card overflow-hidden" id="card-original">
-      <img src="${element.img}" class="card-img-top" alt="${element.title}">
-      <div class="card-body">
+  <div class='col-6 col-md-3'> 
+  <div class="card overflow-hidden" id="card-original">
+  <img src="${element.img}" class="card-img-top" alt="${element.title}">
+  <div class="card-body">
           <p class="card-text title"> ${element.title} </p>
-      </div>
+          </div>
     <div class="card-body d-flex justify-content-between py-1">
-      <p class="card-text category">${element.category}</a>
+    <p class="card-text category">${element.category}</a>
       <p class="card-text price">€ ${element.price}</a>
     </div>
     <div class="card-body">
       <a href="#" class="btn btn-primary" onclick='addToCart(this)'>Add to cart</a>
     </div>
-     </div>
+    </div>
     </div>
      `;
 };
+
+
+/*  Funzione di ricerca. 
+-Usa il keydown event listener sull'input. 
+-Controlla se l'input è più lungo di tre caratteri. 
+         - Se si, filtra i risultati dell'array data. 
+     - Problema : 
+      - Quando vengono ricaricati i libri, si perde il border che segnala che sono stati aggiunti al carrello. 
+      */
+
+let filterData = (searchValue) => {
+  let dataResult = bookData.filter((element) => {
+    if (element.title.toLowerCase().includes(searchValue.toLowerCase())) {
+      return element;
+    }
+  });
+  createResults(dataResult);
+};
+
+searchBtn.addEventListener("click", (event) => {
+  filterData(searchInput.value);
+});
+
+searchInput.addEventListener("input", (event) => {
+  if (searchInput.value.length < 3) {
+    createResults();
+    return;
+  }
+  bookList.innerHTML = "";
+  filterData(searchInput.value);
+});
 
 /* Aggiungi al carrello: 
   1. Al click del bottone aggiungi il libro corrente all'oggetto carrello.
@@ -105,10 +126,10 @@ let addToCart = (this_obj) => {
 };
 
 /* Per mostrare gli elementi nel cart. 
-     - Ciclare nel cart e creare dei li da aggiungere a ul cart
-     - La funzione partirà quando viene cliccato il link del carrello
-     - Extra : far partire la funzione quando si scrolla fino al carrello. 
-  */
+       - Ciclare nel cart e creare dei li da aggiungere a ul cart
+       - La funzione partirà quando viene cliccato il link del carrello
+       - Extra : far partire la funzione quando si scrolla fino al carrello. 
+    */
 
 let showCart = () => {
   Object.keys(cartList).forEach((key) => {
@@ -120,33 +141,6 @@ let showCart = () => {
        `;
   });
 };
-
-/* Carica i libri a prescindere che l'utente abbia cercato qualcosa. */
-loadBooks();
-
-/*  Funzione di ricerca. 
-     -Usa il keydown event listener sull'input. 
-     -Controlla se l'input è più lungo di tre caratteri. 
-        - Se si, filtra i risultati dell'array data. 
-    - Problema : 
-     - Quando vengono ricaricati i libri, si perde il border che segnala che sono stati aggiunti al carrello. 
-*/
-
-searchInput.addEventListener("input", (event) => {
-  if (searchInput.value.length < 3) {
-    loadBooks();
-    return;
-  }
-
-  bookList.innerHTML = "";
-
-  let dataResult = bookData.filter((element, index) => {
-    if (element.title.toLowerCase().includes(searchInput.value.toLowerCase())) {
-      createCard(element, index);
-    }
-    return element;
-  });
-});
 
 /* 
  - Da fare :

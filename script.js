@@ -21,6 +21,8 @@ let bookList = document.getElementById("book-list");
 let cartBtn = document.getElementById("cart-btn");
 let cartUl = document.getElementById("cart-ul");
 let bookData = undefined;
+let cartTotal = document.getElementById("cart-total")
+let totalPrice = 0 ; 
 
 let cartList = {
   /* Structure 
@@ -63,15 +65,14 @@ let createCard = (element, i) => {
       <p class="card-text price">€ ${element.price}</a>
     </div>
     <div class="card-body">
-      <a href="#" class="btn btn-primary" onclick='addToCart(this)'>Add to cart</a>
+      <button class="btn btn-primary m-1" onclick='addToCart(this)'>Add to cart</a>
+      <button class="btn btn-primary m-1" onclick='hideCard(this)'>Hide</a>
     </div>
     </div>
     </div>
-     `;
-};
-
-
-/*  Funzione di ricerca. 
+     `
+}
+     /*
 -Usa il keydown event listener sull'input. 
 -Controlla se l'input è più lungo di tre caratteri. 
          - Se si, filtra i risultati dell'array data. 
@@ -101,6 +102,9 @@ searchInput.addEventListener("input", (event) => {
   filterData(searchInput.value);
 });
 
+/* Pulsante hide: 
+  Nascondi il libro dai risultati. */
+
 /* Aggiungi al carrello: 
   1. Al click del bottone aggiungi il libro corrente all'oggetto carrello.
   2. Il carrello deve avere un testo che mostra sempre la somma totale del prezzo. 
@@ -123,7 +127,14 @@ let addToCart = (this_obj) => {
     title: book_title,
     price: book_price,
   };
+  showCart()
 };
+
+let hideCard = (this_obj) => {
+  let card_column = this_obj.parentNode.parentNode.parentNode;
+   
+  card_column.remove()
+}
 
 /* Per mostrare gli elementi nel cart. 
        - Ciclare nel cart e creare dei li da aggiungere a ul cart
@@ -132,15 +143,31 @@ let addToCart = (this_obj) => {
     */
 
 let showCart = () => {
+
   Object.keys(cartList).forEach((key) => {
+    innerContent = cartUl.innerHTML ; 
+    if (innerContent.includes(cartList[key].title)) {
+      return
+    }
+    convertedPrice = parseFloat(cartList[key].price.replace(/[^\d.,]/g, ''), 10)
+    totalPrice += convertedPrice;  
     cartUl.innerHTML += `
           <li> 
               <span> ${cartList[key].title} </span>
               <span> ${cartList[key].price} </span>
+              <i class="fa-solid fa-rectangle-xmark" onclick="removeFromCart(this)"></i>
           </li> 
        `;
-  });
+  })
+
+  cartTotal.innerText = ` ${totalPrice} `
+
 };
+
+let removeFromCart = (this_obj) => {
+   let outerElement = this_obj.parentNode
+   outerElement.remove()
+}
 
 /* 
  - Da fare :

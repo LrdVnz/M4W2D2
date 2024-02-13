@@ -14,3 +14,7 @@ footer {
     position: fixed; 
     bottom: 0px; */
 }
+
+.fa-rectangle-xmark:hover {
+ cursor: po;
+}

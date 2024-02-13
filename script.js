@@ -21,8 +21,8 @@ let bookList = document.getElementById("book-list");
 let cartBtn = document.getElementById("cart-btn");
 let cartUl = document.getElementById("cart-ul");
 let bookData = undefined;
-let cartTotal = document.getElementById("cart-total")
-let totalPrice = 0 ; 
+let cartTotal = document.getElementById("cart-total");
+let totalPrice = 0;
 
 let cartList = {
   /* Structure 
@@ -34,13 +34,12 @@ let cartList = {
 };
 
 fetch(`https://striveschool-api.herokuapp.com/books`)
-.then((response) => response.json())
-.then((data) => {
-  bookData = data;
-  bookList.innerHTML = "";
-  createResults(data);
-});
-
+  .then((response) => response.json())
+  .then((data) => {
+    bookData = data;
+    bookList.innerHTML = "";
+    createResults(data);
+  });
 
 /* Controllo se l'utente ha inserito dell'input */
 let createResults = (data = bookData) => {
@@ -61,8 +60,10 @@ let createCard = (element, i) => {
           <p class="card-text title"> ${element.title} </p>
           </div>
     <div class="card-body d-flex justify-content-between py-1">
-    <p class="card-text category">${element.category}</a>
-      <p class="card-text price">€ ${element.price}</a>
+      <p class="card-text category">${element.category}</p>
+      <p class="card-text price">€ ${element.price}</p>
+      <a class="card-text asin" href="?q=${element.asin}">dettagli</a>
+
     </div>
     <div class="card-body">
       <button class="btn btn-primary m-1" onclick='addToCart(this)'>Add to cart</a>
@@ -70,14 +71,10 @@ let createCard = (element, i) => {
     </div>
     </div>
     </div>
-     `
-}
-     /*
--Usa il keydown event listener sull'input. 
--Controlla se l'input è più lungo di tre caratteri. 
-         - Se si, filtra i risultati dell'array data. 
-     - Problema : 
-      - Quando vengono ricaricati i libri, si perde il border che segnala che sono stati aggiunti al carrello. 
+     `;
+};
+/*
+-Usa il keydown event listener sull'input. nclick='showDetails()' perde il border che segnala che sono stati aggiunti al carrello. 
       */
 
 let filterData = (searchValue) => {
@@ -127,14 +124,14 @@ let addToCart = (this_obj) => {
     title: book_title,
     price: book_price,
   };
-  showCart()
+  showCart();
 };
 
 let hideCard = (this_obj) => {
   let card_column = this_obj.parentNode.parentNode.parentNode;
-   
-  card_column.remove()
-}
+
+  card_column.remove();
+};
 
 /* Per mostrare gli elementi nel cart. 
        - Ciclare nel cart e creare dei li da aggiungere a ul cart
@@ -143,14 +140,16 @@ let hideCard = (this_obj) => {
     */
 
 let showCart = () => {
-
   Object.keys(cartList).forEach((key) => {
-    innerContent = cartUl.innerHTML ; 
+    innerContent = cartUl.innerHTML;
     if (innerContent.includes(cartList[key].title)) {
-      return
+      return;
     }
-    convertedPrice = parseFloat(cartList[key].price.replace(/[^\d.,]/g, ''), 10)
-    totalPrice += convertedPrice;  
+    convertedPrice = parseFloat(
+      cartList[key].price.replace(/[^\d.,]/g, ""),
+      10
+    );
+    totalPrice += convertedPrice;
     cartUl.innerHTML += `
           <li> 
               <span> ${cartList[key].title} </span>
@@ -158,23 +157,45 @@ let showCart = () => {
               <i class="fa-solid fa-rectangle-xmark" onclick="removeFromCart(this)"></i>
           </li> 
        `;
-  })
+  });
 
-  cartTotal.innerText = ` ${totalPrice} `
-
+  cartTotal.innerText = ` ${totalPrice} `;
 };
 
 let removeFromCart = (this_obj) => {
-   let outerElement = this_obj.parentNode
-   outerElement.remove()
+  let outerElement = this_obj.parentNode;
+  outerElement.remove();
+};
+
+let clearCart = () => {
+  cartUl.innerHTML = "";
+  cartTotal.innerHTML = "";
+  cartList = {};
+};
+
+/* Mostrare pagina univoca dell'artista tramite query.
+
+ Asin di esempio : 1940026091
+*/
+
+if(window.location.search) {
+  let params = new URLSearchParams(window.location.search);
+  let queryValue = params.get('q');
+
+  fetch(`https://striveschool-api.herokuapp.com/books/${queryValue}`)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data)
+    });
 }
 
 /* 
  - Da fare :
-   - Mostrare carrello senza che venga schiacciato 'carrello'  
-   - Cancellare i libri dal carrello. 
-   - Somma il costo del carrello. 
-   - Pulsante per svuotare carrello. 
-   - Stile migliore. 
+   - Mostrare carrello senza che venga schiacciato 'carrello' ok  
+   - Cancellare i libri dal carrello. ok
+   - Somma il costo del carrello. ok
+   - Pulsante per svuotare carrello. ok
+    Extra : 
+    - Rimuovere il bordo della card se ne viene cancellato il titolo dal carrello.  
 
 */

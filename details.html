@@ -10,23 +10,6 @@
     <title>My library</title>
 </head>
 
-    <!--
-      1. Navbar 
-        - La navbar deve avere la casella di ricerca. 
-          - Input con tasto stilizzato da bootstrap.
-        - Nel lato destro : 
-          - Immagine dell'account
-          - Carrello : 
-           - Interattivo ! Mostralo nel modalo quando cliccato. 
-           - Calcola prezzi , ha bottoni per togliere oggetti. 
-      2. Main 
-         - Lista delle cards : 
-           - Mostra libri di default ? (controlla se possibile)
-           - Mostra libri risultanti dalla ricerca. 
-      3. Footer 
-         - Boilerplate content.
-    -->
-
 <body>
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
@@ -57,24 +40,10 @@
                     aria-label="Search">
                 <button class="btn btn-primary" type="button" id="search-btn">Search</button>
             </form>
-            <div class="row gy-3 mt-4" id="book-list">
-                <!-- Spazio per le cards che verranno create in js -->
+            <div class="row gy-3 mt-4" id="artist-list">
+                <!-- Spazio per la scheda artista -->
             </div>
         </div>
-
-        <div class="container m-auto my-4" id="cart">
-            <h3>Cart</h3>
-            <!-- Layout basico per mostrare titoli e prezzi -->
-            <ul id="cart-ul">
-                 
-            </ul>
-            <div id="total-price">
-                <span>Total :</span>
-                <span id="cart-total"> </span>
-                <span> € </span>
-            </div>
-
-            <button class="btn btn-secondary" onclick="clearCart()"> Clear </button>
 
         </div>
     </main>

@@ -62,8 +62,7 @@ let createCard = (element, i) => {
     <div class="card-body d-flex justify-content-between py-1">
       <p class="card-text category">${element.category}</p>
       <p class="card-text price">€ ${element.price}</p>
-      <a class="card-text asin" href="?q=${element.asin}">dettagli</a>
-
+      <a class="card-text asin" href="details.html?q=${element.asin}">dettagli</a>
     </div>
     <div class="card-body">
       <button class="btn btn-primary m-1" onclick='addToCart(this)'>Add to cart</a>
@@ -73,9 +72,6 @@ let createCard = (element, i) => {
     </div>
      `;
 };
-/*
--Usa il keydown event listener sull'input. nclick='showDetails()' perde il border che segnala che sono stati aggiunti al carrello. 
-      */
 
 let filterData = (searchValue) => {
   let dataResult = bookData.filter((element) => {
@@ -84,7 +80,7 @@ let filterData = (searchValue) => {
     }
   });
   createResults(dataResult);
-};
+};/[^\d.,]/g
 
 searchBtn.addEventListener("click", (event) => {
   filterData(searchInput.value);
@@ -111,14 +107,14 @@ searchInput.addEventListener("input", (event) => {
 let addToCart = (this_obj) => {
   // Dal bottone, vado a prendere la card che lo contiene, come nodo.
   let card = this_obj.parentNode.parentNode;
-  // Percorso per titolo : card.childNodes[3].childNodes[1].innerText
+   // Percorso per titolo : card.childNodes[3].childNodes[1].innerText
   // Percorso per prezzo : card.childNodes[5].childNodes[2].innerText
   book_title = card.childNodes[3].childNodes[1].innerText;
-  book_price = card.childNodes[5].childNodes[2].innerText;
+  book_price = card.childNodes[5].childNodes[3].innerText;
   // Per mostrare che è stata aggiunta al carrello:
   card.classList.add("border", "border-2", "border-success");
   // Reset del carrello
-  cartUl.innerHtml = "";
+  cartUl.innerHTML = "";
   //  Aggiunta all'oggetto carrello.
   cartList[`${book_title}`] = {
     title: book_title,
@@ -145,10 +141,7 @@ let showCart = () => {
     if (innerContent.includes(cartList[key].title)) {
       return;
     }
-    convertedPrice = parseFloat(
-      cartList[key].price.replace(/[^\d.,]/g, ""),
-      10
-    );
+    convertedPrice = parseFloat(cartList[key].price.replace(/[^\d.,]/g, ''), 10);
     totalPrice += convertedPrice;
     cartUl.innerHTML += `
           <li> 
@@ -173,29 +166,12 @@ let clearCart = () => {
   cartList = {};
 };
 
-/* Mostrare pagina univoca dell'artista tramite query.
 
- Asin di esempio : 1940026091
-*/
-
-if(window.location.search) {
-  let params = new URLSearchParams(window.location.search);
-  let queryValue = params.get('q');
-
-  fetch(`https://striveschool-api.herokuapp.com/books/${queryValue}`)
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data)
-    });
-}
-
-/* 
- - Da fare :
-   - Mostrare carrello senza che venga schiacciato 'carrello' ok  
-   - Cancellare i libri dal carrello. ok
-   - Somma il costo del carrello. ok
-   - Pulsante per svuotare carrello. ok
-    Extra : 
-    - Rimuovere il bordo della card se ne viene cancellato il titolo dal carrello.  
+/* Create book details 
+- Creare pagina di dettaglio del libro :
+  - Libro centrato. 
+  - Titolo sopra al libro. 
+  - genere sotto. 
+  - prezzo sotto.
 
 */
